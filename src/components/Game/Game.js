@@ -10,20 +10,18 @@ import Keyboard from "../Keyboard/Keyboard";
 import WonBanner from "../WonBanner/WonBanner";
 import LostBanner from "../LostBanner/LostBanner";
 
-// Pick a random word on every pageload.
-const answer = sample(WORDS);
-// To make debugging easier, we'll log the solution in the console.
-console.info({ answer });
-
 function Game() {
+  const [answer, setAnswer] = React.useState(sample(WORDS));
   const [guesses, setGuesses] = React.useState([]);
   const [gameStatus, setGameStatus] = React.useState("running");
-  const [letterStatus, setLetterStatus] = React.useState({});
+  const [keyboardStatus, setKeyboardStatus] = React.useState({});
+
+  console.info(answer);
 
   function handleSubmitGuess(tentativeGuess) {
     const nextGuesses = [...guesses, tentativeGuess];
     setGuesses(nextGuesses);
-    updateKeyboardLetters(tentativeGuess);
+    updateKeyboard(tentativeGuess);
     if (tentativeGuess === answer) {
       setGameStatus("won");
     } else if (nextGuesses.length >= NUM_OF_GUESSES_ALLOWED) {
@@ -31,35 +29,39 @@ function Game() {
     }
   }
 
-  function updateKeyboardLetters(word) {
-    const wordResults = checkGuess(word, answer);
-    let updates;
-    if (wordResults) {
-      updates = wordResults.reduce((differences, result) => {
-        let currentStatus = letterStatus[result.letter];
-        if (!currentStatus) {
-          // first use of letter will always update keyboard
-          return [...differences, result];
+  function updateKeyboard(tentativeGuess) {
+    const guessResults = checkGuess(tentativeGuess, answer);
+
+    const updates =
+      guessResults &&
+      guessResults.reduce((updates, result) => {
+        const letterStatus = keyboardStatus[result.letter];
+        if (!letterStatus) {
+          return [...updates, result];
         } else if (
-          currentStatus === "misplaced" &&
+          letterStatus === "misplaced" &&
           result.status === "correct"
         ) {
-          // subsequent uses only update keyboard if misplaced => correct
-          return [...differences, result];
-        } else {
-          return differences;
-        }
+          return [...updates, result];
+        } else return updates;
       }, []);
-    }
+
     if (updates) {
-      const nextLetterStatus = {
-        ...letterStatus,
+      const nextKeyboardStatus = {
+        ...keyboardStatus,
       };
-      updates.forEach((update) => {
-        nextLetterStatus[update.letter] = update.status;
+      updates.forEach(({ letter, status }) => {
+        nextKeyboardStatus[letter] = status;
       });
-      setLetterStatus(nextLetterStatus);
+      setKeyboardStatus(nextKeyboardStatus);
     }
+  }
+
+  function handleRestart() {
+    setGuesses([]);
+    setGameStatus("running");
+    setKeyboardStatus({});
+    setAnswer(sample(WORDS));
   }
 
   return (
@@ -69,10 +71,17 @@ function Game() {
         handleSubmitGuess={handleSubmitGuess}
         gameStatus={gameStatus}
       />
-      <Keyboard letterStatus={letterStatus} />
+      <Keyboard status={keyboardStatus} />
 
-      {gameStatus === "won" && <WonBanner numOfGuesses={guesses.length} />}
-      {gameStatus === "lost" && <LostBanner answer={answer} />}
+      {gameStatus === "won" && (
+        <WonBanner
+          numOfGuesses={guesses.length}
+          handleRestart={handleRestart}
+        />
+      )}
+      {gameStatus === "lost" && (
+        <LostBanner answer={answer} handleRestart={handleRestart} />
+      )}
     </>
   );
 }

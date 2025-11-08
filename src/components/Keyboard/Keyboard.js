@@ -1,10 +1,10 @@
 import React from "react";
 
-function Key({ letter, letterStatus }) {
-  return <div className={`key ${letterStatus}`}>{letter}</div>;
+function Key({ letter, status }) {
+  return <div className={`key ${status}`}>{letter}</div>;
 }
 
-function Keyboard({ letterStatus }) {
+function Keyboard({ status }) {
   const TOP_LETTERS = "qwertyuiop".toUpperCase().split("");
   const MIDDLE_LETTERS = "asdfghjkl".toUpperCase().split("");
   const BOTTOM_LETTERS = "zxcvbnm".toUpperCase().split("");
@@ -13,29 +13,17 @@ function Keyboard({ letterStatus }) {
     <div className="keyboard-wrapper">
       <div className="keyboard-row">
         {TOP_LETTERS.map((letter) => (
-          <Key
-            key={letter}
-            letter={letter}
-            letterStatus={letterStatus[letter]}
-          />
+          <Key key={letter} letter={letter} status={status[letter]} />
         ))}
       </div>
       <div className="keyboard-row">
         {MIDDLE_LETTERS.map((letter) => (
-          <Key
-            key={letter}
-            letter={letter}
-            letterStatus={letterStatus[letter]}
-          />
+          <Key key={letter} letter={letter} status={status[letter]} />
         ))}
       </div>
       <div className="keyboard-row">
         {BOTTOM_LETTERS.map((letter) => (
-          <Key
-            key={letter}
-            letter={letter}
-            letterStatus={letterStatus[letter]}
-          />
+          <Key key={letter} letter={letter} status={status[letter]} />
         ))}
       </div>
     </div>
