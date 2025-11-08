@@ -6,6 +6,7 @@ import { sample } from "../../utils";
 import { WORDS } from "../../data";
 import { checkGuess } from "../../game-helpers";
 import GuessResults from "../GuessResults/GuessResults";
+import Keyboard from "../Keyboard/Keyboard";
 import WonBanner from "../WonBanner/WonBanner";
 import LostBanner from "../LostBanner/LostBanner";
 
@@ -68,6 +69,7 @@ function Game() {
         handleSubmitGuess={handleSubmitGuess}
         gameStatus={gameStatus}
       />
+      <Keyboard letterStatus={letterStatus} />
 
       {gameStatus === "won" && <WonBanner numOfGuesses={guesses.length} />}
       {gameStatus === "lost" && <LostBanner answer={answer} />}

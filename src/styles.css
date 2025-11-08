@@ -230,3 +230,46 @@ h1 {
     transform: translateY(0%);
   }
 }
+
+/* Added styles for Keyboard */
+
+.keyboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  min-width: 100%;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100%;
+}
+
+.key {
+  width: 28px;
+  background-color: var(--color-gray-900);
+  padding: 6px;
+  border-radius: 8px;
+  margin: 4px;
+  text-align: center;
+}
+
+.key.correct {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.key.misplaced {
+  background: var(--color-warning);
+  border-color: var(--color-warning);
+  color: white;
+}
+
+.key.incorrect {
+  background: var(--color-gray-300);
+  border-color: var(--color-gray-300);
+  color: white;
+}
